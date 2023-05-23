@@ -1,7 +1,7 @@
 package com.example.entities;
 
 import java.sql.Time;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,8 +28,8 @@ public class Restaurant {
 	private int id;
 	private String nom;
 	private String adresse;
-	private int longitude;
-	private int latitude;
+	private Double longitude;
+	private Double latitude;
 	private String ran__;
 	@Column(name = "heure_ouverture")
 	@Temporal(TemporalType.TIME)
@@ -49,9 +49,9 @@ public class Restaurant {
 	@ManyToOne
 	private Serie serie;
 	
-	@JsonIgnore
+	
 	@ManyToMany(mappedBy = "restaurants", fetch = FetchType.EAGER)
-	private List<Specialite> specialites;
+	private List<Specialite> specialites = new ArrayList<>();
 	
 	@ManyToMany(mappedBy = "restaurants", fetch = FetchType.EAGER)
 	private List<User> users;
@@ -90,8 +90,12 @@ public class Restaurant {
 	}
 
 	public void setSpecialites(List<Specialite> specialites) {
-		this.specialites = specialites;
+	    this.specialites = specialites;
+	    for (Specialite specialite : specialites) {
+	        specialite.getRestaurants().add(this);
+	    }
 	}
+
 
 	public List<User> getUsers() {
 		return users;
@@ -133,19 +137,19 @@ public class Restaurant {
 		this.adresse = adresse;
 	}
 
-	public int getLongitude() {
+	public Double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(int longitude) {
+	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
 
-	public int getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(int latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 
@@ -157,7 +161,7 @@ public class Restaurant {
 		this.ran__ = ran__;
 	}
 
-	public Date getHeure_ouverture() {
+	public Time getHeure_ouverture() {
 		return heure_ouverture;
 	}
 
@@ -165,7 +169,7 @@ public class Restaurant {
 		this.heure_ouverture = heure_ouverture;
 	}
 
-	public Date getHeure_fermeture() {
+	public Time getHeure_fermeture() {
 		return heure_fermeture;
 	}
 
@@ -173,7 +177,7 @@ public class Restaurant {
 		this.heure_fermeture = heure_fermeture;
 	}
 
-	public Restaurant(String nom, String adresse, int longitude, int latitude, String range, Time heure_ouverture,
+	public Restaurant(String nom, String adresse, Double longitude, Double latitude, String range, Time heure_ouverture,
 			Time heure_fermeture) {
 		super();
 		this.nom = nom;

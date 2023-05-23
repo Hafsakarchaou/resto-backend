@@ -6,16 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.entities.Restaurant;
-
+import com.example.entities.Specialite;
 import com.example.repository.RestauRepository;
+import com.example.repository.SpecialiteRepository;
 
 import Dao.IDao;
+import jakarta.transaction.Transactional;
 
 @Service
 public class RestauService implements IDao<Restaurant>{
 
 	@Autowired
 	private RestauRepository restauRepository ;
+	private SpecialiteRepository specialiteRepository ;
 	
 	
 	
@@ -23,16 +26,24 @@ public class RestauService implements IDao<Restaurant>{
 		return restauRepository.findBySpecialiteEqualsAndZoneEquals(nomSpecialite, nomZone);
 	}*/
 
+	
 	@Override
+	@Transactional
 	public Restaurant save(Restaurant o) {
-		return restauRepository.save(o);
-		
+		for (Specialite specialite : o.getSpecialites()) {
+	        specialite.getRestaurants().add(o);
+	    }
+	    return restauRepository.save(o);
 	}
+
+
+		
+	
 
 	@Override
 	public List<Restaurant> findAll() {
 		return restauRepository.findAll();
-		
+        
 	}
 
 	@Override

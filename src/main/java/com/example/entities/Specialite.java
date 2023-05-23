@@ -1,5 +1,6 @@
 package com.example.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -15,13 +16,16 @@ public class Specialite {
 	private String nom;
 	
 	@ManyToMany
-	private List<Restaurant> restaurants;
+	private List<Restaurant> restaurants = new ArrayList<>();
 	
 	public Specialite() {
 		super();
 	}
 
 
+    public Specialite(int id) {
+        this.id = id;
+    }
 
 	public Specialite(String nom) {
 		super();
@@ -45,8 +49,12 @@ public class Specialite {
 
 
 	public void setRestaurants(List<Restaurant> restaurants) {
-		this.restaurants = restaurants;
+	    this.restaurants = restaurants;
+	    for (Restaurant restaurant : restaurants) {
+	        restaurant.getSpecialites().add(this);
+	    }
 	}
+
 
 
 
