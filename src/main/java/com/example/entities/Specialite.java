@@ -2,11 +2,13 @@ package com.example.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 @Entity
 public class Specialite {
@@ -15,22 +17,24 @@ public class Specialite {
 	private int id;
 	private String nom;
 	
-	@ManyToMany
-	private List<Restaurant> restaurants = new ArrayList<>();
+	@ManyToMany(mappedBy = "specialites",fetch = FetchType.EAGER)
+	private List <Restaurant>restaurants;
+	
 	
 	public Specialite() {
 		super();
 	}
 
+	public Specialite(String nom, List<Restaurant> restaurants) {
+		super();
+		this.nom = nom;
+		this.restaurants = restaurants;
+	}
 
     public Specialite(int id) {
         this.id = id;
     }
 
-	public Specialite(String nom) {
-		super();
-		this.nom = nom;
-	}
 
 
 	public int getId() {
@@ -43,16 +47,18 @@ public class Specialite {
 	
 	
 	public List<Restaurant> getRestaurants() {
-		return restaurants;
+	    if (restaurants == null) {
+	        restaurants = new ArrayList<>();
+	    }
+	    return restaurants;
 	}
 
 
-
 	public void setRestaurants(List<Restaurant> restaurants) {
-	    this.restaurants = restaurants;
-	    for (Restaurant restaurant : restaurants) {
-	        restaurant.getSpecialites().add(this);
+	    if (this.restaurants == null) {
+	        this.restaurants = new ArrayList<>();
 	    }
+	    this.restaurants.addAll(restaurants);
 	}
 
 
@@ -67,6 +73,7 @@ public class Specialite {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
+
 
 
 }

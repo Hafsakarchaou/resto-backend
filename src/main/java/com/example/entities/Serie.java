@@ -2,6 +2,8 @@ package com.example.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +19,8 @@ public class Serie {
 	private int id;
 	private String nom;
 	
-	@OneToMany(mappedBy = "serie", fetch = FetchType.EAGER)
+	
+	@OneToMany(mappedBy = "serie")
 	private List<Restaurant> restaurants;
 	
 	

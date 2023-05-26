@@ -3,12 +3,14 @@ package com.example.entities;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
@@ -20,11 +22,14 @@ public class Zone {
 	private int id;
 	private String nom;
 	
+	
 	@ManyToOne
-	@JsonIgnore
+	@JoinColumn(name="id_ville")
+	@JsonIgnoreProperties("zones")
 	private Ville ville;
 	
-	@OneToMany(mappedBy = "zone", fetch = FetchType.EAGER)
+	
+	@OneToMany(mappedBy = "zone")
 	private List<Restaurant> Restaurants;
 	
 	public Zone() {

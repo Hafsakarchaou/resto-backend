@@ -3,9 +3,10 @@ package com.example.entities;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -40,23 +42,39 @@ public class Restaurant {
 	private Time heure_fermeture;
 	
 	
-	@JsonIgnore
+	
+	
 	@ManyToOne
+	@JsonIgnoreProperties("restaurants")
 	@JoinColumn(name = "zone_id")
 	private Zone zone;
 	
-	@JsonIgnore
+	
 	@ManyToOne
+	@JsonIgnoreProperties("restaurants")
+	@JoinColumn(name="serie_id")
 	private Serie serie;
 	
 	
-	@ManyToMany(mappedBy = "restaurants", fetch = FetchType.EAGER)
-	private List<Specialite> specialites = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+	    joinColumns = {
+	            @JoinColumn(name = "restaurant_id", referencedColumnName = "id")
+	    },
+	    inverseJoinColumns = {
+	            @JoinColumn(name = "specialite_id", referencedColumnName = "id")
+	    }
+	)
+	@JsonIgnoreProperties("restaurants")
+	private List<Specialite> specialites;
 	
 	@ManyToMany(mappedBy = "restaurants", fetch = FetchType.EAGER)
+	@JsonIgnore
 	private List<User> users;
 	
+
 	@OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
+	@JsonIgnore
 	private List<Photo> photos;
 	
 	
@@ -91,9 +109,6 @@ public class Restaurant {
 
 	public void setSpecialites(List<Specialite> specialites) {
 	    this.specialites = specialites;
-	    for (Specialite specialite : specialites) {
-	        specialite.getRestaurants().add(this);
-	    }
 	}
 
 
@@ -158,7 +173,7 @@ public class Restaurant {
 	}
 
 	public void setRange(String range) {
-		this.ran__ = ran__;
+		this.ran__ = range;
 	}
 
 	public Time getHeure_ouverture() {
@@ -178,15 +193,20 @@ public class Restaurant {
 	}
 
 	public Restaurant(String nom, String adresse, Double longitude, Double latitude, String range, Time heure_ouverture,
-			Time heure_fermeture) {
-		super();
-		this.nom = nom;
-		this.adresse = adresse;
-		this.longitude = longitude;
-		this.latitude = latitude;
-		this.ran__ = ran__;
-		this.heure_ouverture = heure_ouverture;
-		this.heure_fermeture = heure_fermeture;
+	        Time heure_fermeture, List<Specialite> specialites) {
+	    super();
+	    this.nom = nom;
+	    this.adresse = adresse;
+	    this.longitude = longitude;
+	    this.latitude = latitude;
+	    this.ran__ = range;
+	    this.heure_ouverture = heure_ouverture;
+	    this.heure_fermeture = heure_fermeture;
+	    if (specialites != null) {
+	        this.specialites = specialites;
+	    } else {
+	        this.specialites = new ArrayList<>();
+	    }
 	}
 
 	public Restaurant() {

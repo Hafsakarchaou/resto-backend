@@ -3,6 +3,7 @@ package com.example.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,7 +15,7 @@ public class Photo {
 	private int id;
 	private String url;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Restaurant restaurant;
 
